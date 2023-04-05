@@ -5,10 +5,10 @@
 #include <cmath>
 #include <stack>
 
+#include <sdsl/k2_tree.hpp>
+
 using namespace std;
-
-//#include <sdsl/k2_tree.hpp>
-
+using namespace sdsl;
 
 // void remove_spaces(char * str){
 //     int i, j;
