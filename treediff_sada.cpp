@@ -7,6 +7,11 @@ using namespace std;
 using namespace sdsl;
 
 
+struct Struct {
+    int lca;
+    int size;
+};
+
 void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings, vector<int>& code, int num_tree, bool &internal_nodes){
     string str = "";
     int aux;
@@ -82,7 +87,7 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, ve
 }
 
 
-// without internal nodes
+// without internal nodes (next_sibling implementation)
 int rf_2(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code, int current, int &rf_dist, vector<int> &clusters_1){
     int lcas, lcas_aux, x;
     
@@ -124,7 +129,7 @@ int rf_2(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code
 }
 
 
-// with internal nodes
+// with internal nodes (next_sibling implementation)
 int rf(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code, int current, int &rf_dist, vector<int> &clusters_1){
     int lcas, lcas_aux, x;
 

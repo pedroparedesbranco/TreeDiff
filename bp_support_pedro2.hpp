@@ -72,7 +72,8 @@ template<uint32_t t_sml_blk = 256,
          uint32_t t_med_deg = 32,
          class t_rank       = rank_support_v5<>,
          class t_rank_10       = rank_support_v5<10,2>,
-         class t_select     = select_support_mcl<> >
+         class t_select     = select_support_mcl<>,
+         class t_select_0     = select_support_mcl<0> >
 class bp_support_pedro2
 {
     public:
@@ -83,12 +84,14 @@ class bp_support_pedro2
         typedef t_rank                      rank_type;
         typedef t_rank_10                      rank_type_10;
         typedef t_select                    select_type;
+        typedef t_select_0                    select_type_0;
     private:
         static_assert(0 < t_sml_blk, "bp_support_pedro2: t_sml_blk should be greater than 0!");
         const bit_vector* m_bp        = nullptr;   // the supported balanced parentheses sequence as bit_vector
         rank_type         m_bp_rank;   // RS for the BP sequence => see excess() and rank()
         rank_type_10         m_bp_rank_10;   
         select_type       m_bp_select; // SS for the BP sequence => see select()
+        select_type_0       m_bp_select_0; 
 
         sml_block_array_type  m_sml_block_min_max;
         med_block_array_type  m_med_block_min_max;
@@ -113,6 +116,8 @@ class bp_support_pedro2
             m_bp_rank_10.set_vector(m_bp);
             m_bp_select = bp_support.m_bp_select;
             m_bp_select.set_vector(m_bp);
+            m_bp_select_0 = bp_support.m_bp_select_0;
+            m_bp_select_0.set_vector(m_bp);
 
             m_sml_block_min_max = bp_support.m_sml_block_min_max;
             m_med_block_min_max = bp_support.m_med_block_min_max;
@@ -367,6 +372,7 @@ class bp_support_pedro2
         const rank_type&            bp_rank           = m_bp_rank;           //!< RS for the underlying BP sequence.
         const rank_type_10&            bp_rank_10           = m_bp_rank_10;           //!< RS for the underlying BP sequence.
         const select_type&          bp_select         = m_bp_select;         //!< SS for the underlying BP sequence.
+        const select_type_0&          bp_select_0         = m_bp_select_0;         //!< SS for the underlying BP sequence.
         const sml_block_array_type& sml_block_min_max = m_sml_block_min_max; //!< Small blocks array. Rel. min/max for the small blocks.
         const med_block_array_type& med_block_min_max = m_med_block_min_max; //!< Array containing the min max tree of the medium blocks.
 
@@ -385,6 +391,7 @@ class bp_support_pedro2
             util::init_support(m_bp_rank, bp);
             util::init_support(m_bp_rank_10, bp);
             util::init_support(m_bp_select, bp);
+            util::init_support(m_bp_select_0, bp);
 
             m_med_inner_blocks = 1;
             // m_med_inner_blocks = (next power of 2 greater than or equal to m_med_blocks)-1
@@ -458,6 +465,8 @@ class bp_support_pedro2
                 m_bp_rank_10.set_vector(m_bp);
                 m_bp_select = std::move(bp_support.m_bp_select);
                 m_bp_select.set_vector(m_bp);
+                m_bp_select_0 = std::move(bp_support.m_bp_select_0);
+                m_bp_select_0.set_vector(m_bp);
 
                 m_sml_block_min_max = std::move(bp_support.m_sml_block_min_max);
                 m_med_block_min_max = std::move(bp_support.m_med_block_min_max);
@@ -481,6 +490,7 @@ class bp_support_pedro2
             m_bp_rank.swap(bp_support.m_bp_rank);
             m_bp_rank_10.swap(bp_support.m_bp_rank_10);
             m_bp_select.swap(bp_support.m_bp_select);
+            m_bp_select_0.swap(bp_support.m_bp_select_0);
 
             m_sml_block_min_max.swap(bp_support.m_sml_block_min_max);
             m_med_block_min_max.swap(bp_support.m_med_block_min_max);
@@ -512,6 +522,7 @@ class bp_support_pedro2
             m_bp_rank.set_vector(bp);
             m_bp_rank_10.set_vector(bp);
             m_bp_select.set_vector(bp);
+            m_bp_select_0.set_vector(bp);
         }
 
         /*! Calculates the excess value at index i.
@@ -553,6 +564,11 @@ class bp_support_pedro2
             }
 #endif
             return m_bp_select(i);
+        }
+
+        size_type select0(size_type i)const
+        {
+            return m_bp_select_0(i);
         }
 
         size_type bv_value(size_type pos){
@@ -632,7 +648,7 @@ class bp_support_pedro2
         }
 
         size_type post_order_select(size_type i){
-            return this->find_open(this->select_0(i));
+            return this->find_open(this->select0(i));
         }
 
         size_type depth(size_type v){
@@ -661,6 +677,9 @@ class bp_support_pedro2
                 aux = v;
                 v = u;
                 u = aux;
+            }
+            if(u == 0){
+                return 0;
             }
             // std::cout << u << std::endl;
             // std::cout << v << std::endl;
