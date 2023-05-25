@@ -81,13 +81,19 @@ void create_clusters(int num_nodes1, int num_leafs, unordered_map<string, int> &
             i++;
         }
         else{
+            // cout << "i = " << i  << " left = " << left << " right = " << right << endl;
             left = code[labels[0][left_leaf(i, sizes[0][i])]] - 1;
             i++;
-            if(sizes[0][i] == 0){
+            if(i == num_nodes1){
                 loc = right;
             }
             else{
-                loc = left;
+                if(sizes[0][i] == 0){
+                    loc = right;
+                }
+                else{
+                    loc = left;
+                }
             }
             clusters[0][loc] = left;
             clusters[1][loc] = right;
@@ -189,20 +195,20 @@ int main(int argc, char* argv[]){
 
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
-    cout << "parse time: " << elapsed_seconds.count() << "s" << endl;
+    // cout << "parse time: " << elapsed_seconds.count() << "s" << endl;
     
 
-    // cout << num_nodes1 << "   " << num_nodes2 << "   " << num_leafs << endl;
+    // cout << num_nodes1 << "   " << num_nodes2 << "   " << leaf_count1 << endl;
 
     // for(i = 0; i < num_nodes1; i++){
-    //     cout << i << " = " << code[labels[i][0]] << "    |     " << sizes[0][i]  << "    |     " << left_leaf(i, sizes[0][i]) <<endl;
+    //     cout << i << " = " << code[labels[0][i]] << "    |     " << sizes[0][i]  << "    |     " << left_leaf(i, sizes[0][i]) <<endl;
     // }
 
     // cout << "\n\n\n";
 
 
     // for(i = 0; i < num_nodes2; i++){
-    //     cout << i << " = " << code[labels[i][1]] << "    |     " << sizes[1][i]  << "    |     " << left_leaf(i, sizes[1][i]) <<endl;
+    //     cout << i << " = " << code[labels[1][i]] << "    |     " << sizes[1][i]  << "    |     " << left_leaf(i, sizes[1][i]) <<endl;
     // }
     auto start2 = std::chrono::system_clock::now();
 
@@ -215,7 +221,7 @@ int main(int argc, char* argv[]){
     // cout << "\n\n\n";
 
     // for(i = 0; i < leaf_count1; i++){
-    //     cout << i << " = " << clusters[0][i] << "  |  " << clusters[1][i] << "  |  " << clusters[2][i] << endl;
+    //     cout << i << " = " << clusters[0][i] << "  |  " << clusters[1][i] << endl;
     // }
 
     compute_distance(num_nodes2, leaf_count1, code, sizes, labels, clusters, rf_dist);
@@ -225,7 +231,8 @@ int main(int argc, char* argv[]){
 
     auto end2 = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds2 = end2-start2;
-    cout << "algorithm time: " << elapsed_seconds2.count() << "s" << endl;
+    // cout << "algorithm time: " << elapsed_seconds2.count() << "s" << endl;
+    // cout << elapsed_seconds2.count() << ", ";
 
     return 0;
 }

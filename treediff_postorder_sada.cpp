@@ -92,6 +92,7 @@ void rf_2(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& cod
     int current, post_current;
     int counter;
     int size_cluster;
+    int close;
     stack<Struct> lcas_stack;
     Struct first;
     // cout << "size = " << size << endl;
@@ -105,7 +106,8 @@ void rf_2(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& cod
             lcas_stack.push(first);
         }
         else{
-            size_cluster = vec_1.cluster_size(post_current) - 1; // TODO: -1??
+            close = vec_1.find_close(post_current);
+            size_cluster = vec_1.cluster_size2(post_current, close) - 1; // TODO: -1??
             // cout << "current = " << current << "  post_current = " << vec_1.nodemap(post_current) << "  size = " << size_cluster << endl;
             counter = size_cluster;
             while(counter != 0){
@@ -125,7 +127,7 @@ void rf_2(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& cod
             first.size = size_cluster + 1;
             lcas_stack.push(first);
             // cout << "Comparission between: " << vec_1.nodemap(post_current) << " and " << vec_2.nodemap(lcas) << endl;
-            if(vec_1.num_leaves(post_current) == vec_2.num_leaves(lcas)){
+            if(vec_1.num_leaves2(post_current, close) == vec_2.num_leaves(lcas)){
                 rf_dist++;
             }
             else{
@@ -180,7 +182,7 @@ void rf(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code,
             first.size = size_cluster;
             lcas_stack.push(first);
             // cout << "Comparission between: " << vec_1.nodemap(post_current) << " and " << vec_2.nodemap(lcas) << endl;
-            if(vec_1.cluster_size(post_current) == vec_2.cluster_size(lcas)){
+            if(size_cluster == vec_2.cluster_size(lcas)){
                 rf_dist++;
             }
             else{
@@ -222,7 +224,7 @@ int main(int argc, char* argv[]){
 
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
-    cout << "parse time: " << elapsed_seconds.count() << "s" << endl;
+    // cout << "parse time: " << elapsed_seconds.count() << "s" << endl;
 
     auto start2 = std::chrono::system_clock::now();
     // Some computation here
@@ -247,6 +249,7 @@ int main(int argc, char* argv[]){
     }
     auto end2 = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds2 = end2-start2;
-    cout << "algorithm time: " << elapsed_seconds2.count() << "s" << endl;
+    // cout << "algorithm time: " << elapsed_seconds2.count() << "s" << endl;
+    // cout << elapsed_seconds2.count() << ", ";
     return 0;
 }

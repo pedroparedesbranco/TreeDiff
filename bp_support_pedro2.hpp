@@ -702,8 +702,16 @@ class bp_support_pedro2
             return this->rank(this->find_close(v)) - this->rank(v) + 1;
         }
 
+        size_type cluster_size2(size_type v, size_type u){
+            return this->rank(u) - this->rank(v) + 1;
+        }
+
         size_type num_leaves(size_type v){
             return this->rank10(this->find_close(v)) - this->rank10(v) + 1;
+        }
+
+        size_type num_leaves2(size_type v, size_type u){
+            return this->rank10(u) - this->rank10(v) + 1;
         }
 
 
