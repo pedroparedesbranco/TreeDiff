@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 #include "bp_support_pedro2.hpp"
 
@@ -32,7 +33,7 @@ void get_weight(FILE* fp, vector<float> &w, char c, int count, bool &weighted_tr
     ungetc(c, fp);
 }
 
-void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings, vector<int>& code, int num_tree, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
+void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings, int_vector<>& code, int num_tree, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     string str = "";
     int aux;
     while(!(c == ')' || c == '(' || c == ',' || c == ';' || c == ':')){
@@ -74,7 +75,7 @@ void add_bit(bit_vector& bv, int i){
     bv[bv.size() - 1] = i;
 }
 
-bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, vector<int>& code, int num_tree, int &num_nodes, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
+bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, int_vector<>& code, int num_tree, int &num_nodes, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     bit_vector bv = bit_vector(0);
     stack<int> stack;
     string str = "";
@@ -151,7 +152,8 @@ int main(int argc, char* argv[]){
 
     unordered_map<string, int> strings;
 
-    vector<int> code;
+    int_vector<> code;
+    int_vector<> code2;
 
     vector<float> w1;
     vector<float> w2;
@@ -169,37 +171,48 @@ int main(int argc, char* argv[]){
     bp_support_pedro2<> vec_2(&v_2);
 
     FILE* fp;
-    stringstream s1, s2, ss1, ss2;
+    stringstream s1, s2, ss1, ss2, scode;
 
     v_1.serialize(s1);
     v_2.serialize(s2);
     vec_1.serialize(ss1);
     vec_2.serialize(ss2);
+    code.serialize(scode);
+
 
     // cout << "s1 = " << s1.str() << endl;
     // cout << "s2 = " << s2.str() << endl;
     // cout << "ss1 = " << ss1.str() << endl;
     // cout << "ss2 = " << ss2.str() << endl;
 
-    ofstream files1("serialization/s1.txt");
+    cout << string(argv[3]) + "/v_1.txt" << endl;
+
+    system(("mkdir " + string(argv[3])).c_str());
+
+    ofstream files1(string(argv[3]) + "/v_1.txt");
 
     files1 << s1.str();
     files1.close();
 
-    ofstream files2("serialization/s2.txt");
+    ofstream files2(string(argv[3]) + "/v_2.txt");
 
     files2 << s2.str();
     files2.close();
 
-    ofstream filess1("serialization/ss1.txt");
+    ofstream filess1(string(argv[3]) + "/vec_1.txt");
 
     filess1 << ss1.str();
     filess1.close();
 
-    ofstream filess2("serialization/ss2.txt");
+    ofstream filess2(string(argv[3]) + "/vec_2.txt");
 
     filess2 << ss2.str();
     filess2.close();
+
+    ofstream filecode(string(argv[3]) + "/code.txt");
+
+    filecode << scode.str();
+    filecode.close();
 
 
     // fp = fopen("serialization/s1.txt", "w");

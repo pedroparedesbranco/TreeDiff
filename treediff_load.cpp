@@ -31,7 +31,7 @@ void get_weight(FILE* fp, vector<float> &w, char c, int count, bool &weighted_tr
     ungetc(c, fp);
 }
 
-void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings, vector<int>& code, int num_tree, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
+void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings, int_vector<>& code, int num_tree, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     string str = "";
     int aux;
     while(!(c == ')' || c == '(' || c == ',' || c == ';' || c == ':')){
@@ -73,7 +73,14 @@ void add_bit(bit_vector& bv, int i){
     bv[bv.size() - 1] = i;
 }
 
-bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, vector<int>& code, int num_tree, int &num_nodes, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
+// void add_int(int_vector<>& code, int i){
+//     if(code.size() < i){
+//         code.resize(i);
+//     }
+//     code[strings[str]] = count;
+// }
+
+bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, int_vector<>& code, int num_tree, int &num_nodes, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     bit_vector bv = bit_vector(0);
     stack<int> stack;
     string str = "";
@@ -131,7 +138,7 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, ve
 }
 
 // without internal nodes (post_order implementation)
-void weighted_rf_onlyleaves(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code, int size, float &w_rf_dist, vector<int> &clusters_1, vector<float>& w1, vector<float>& w2){
+void weighted_rf_onlyleaves(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, int_vector<>& code, int size, float &w_rf_dist, vector<int> &clusters_1, vector<float>& w1, vector<float>& w2){
     int lcas = -1;
     int current, post_current;
     int counter;
@@ -189,7 +196,7 @@ void weighted_rf_onlyleaves(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2
 }
 
 // with internal nodes (post_order implementation)
-void weighted_rf_allnodes(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code, int size, float &w_rf_dist, vector<int> &clusters_1, vector<float>& w1, vector<float>& w2){
+void weighted_rf_allnodes(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, int_vector<>& code, int size, float &w_rf_dist, vector<int> &clusters_1, vector<float>& w1, vector<float>& w2){
     int lcas = -1;
     int current, post_current;
     int counter;
@@ -247,7 +254,7 @@ void weighted_rf_allnodes(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, 
 }
 
 // without internal nodes (post_order implementation)
-void rf_onlyleaves(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code, int size, int &rf_dist, vector<int> &clusters_1){
+void rf_onlyleaves(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, int_vector<>& code, int size, int &rf_dist, vector<int> &clusters_1){
     int lcas = -1;
     int current, post_current;
     int counter;
@@ -299,7 +306,7 @@ void rf_onlyleaves(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<
 }
 
 // with internal nodes (post_order implementation)
-void rf_allnodes(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, vector<int>& code, int size, int &rf_dist, vector<int> &clusters_1){
+void rf_allnodes(bp_support_pedro2<> vec_1, bp_support_pedro2<> vec_2, int_vector<>& code, int size, int &rf_dist, vector<int> &clusters_1){
     int lcas = -1;
     int current, post_current;
     int counter;
@@ -362,10 +369,10 @@ int main(int argc, char* argv[]){
 
     int rf_dist = 0;
 
-    int num_nodes1 = 0;
-    int num_nodes2 = 0;
-
-    int size;
+    int num_nodes1;
+    int num_nodes2;
+    int leaf_count;
+    // int size;
 
     float w_rf_dist = 0;
 
@@ -374,96 +381,94 @@ int main(int argc, char* argv[]){
 
     vector<int> clusters_1;
     vector<int> clusters_2;
-
-    unordered_map<string, int> strings;
-
-    vector<int> code;
-
-    vector<float> w1;
-    vector<float> w2;
-
-    auto start = std::chrono::system_clock::now();
+    int_vector<> code;
     
-    bit_vector v_1 = create_bit_vector(argv[1], strings, code, 0, num_nodes1, internal_nodes, weighted_trees, w_rf_dist, w1, w2);
-    bit_vector v_2 = create_bit_vector(argv[2], strings, code, 1, num_nodes2, internal_nodes, weighted_trees, w_rf_dist, w1, w2);
+    bit_vector v_1;
+    bit_vector v_2;
 
-    strings.clear();    
+    // strings.clear();    
 
-    size = v_1.size() / 2;
+    // size = v_1.size() / 2;
 
-    bp_support_pedro2<> vec_1(&v_1);
-    bp_support_pedro2<> vec_2(&v_2);
+    bp_support_pedro2<> vec_1(nullptr);
+    bp_support_pedro2<> vec_2(nullptr);
 
-    bit_vector v_3;
-    bit_vector v_4;
-
-    bp_support_pedro2<> vec_3(nullptr);
-    bp_support_pedro2<> vec_4(nullptr);
-
-    FILE* fp;
+    // FILE* fp;
 
     // stringstream s1, s2, ss1, ss2;
 
-    ifstream files1("serialization/s1.txt");
+    ifstream files1(string(argv[3]) + "/v_1.txt");
 
     stringstream s1;
     s1 << files1.rdbuf();
     files1.close();
+    files1.clear();
 
-    ifstream files2("serialization/s2.txt");
+    ifstream files2(string(argv[3]) + "/v_2.txt");
 
     stringstream s2;
     s2 << files2.rdbuf();
     files2.close();
+    files2.clear();
 
-    ifstream filess1("serialization/ss1.txt");
+
+    ifstream filess1(string(argv[3]) + "/vec_1.txt");
 
     stringstream ss1;
     ss1 << filess1.rdbuf();
     filess1.close();
+    filess1.clear();
 
-    ifstream filess2("serialization/ss2.txt");
+
+    ifstream filess2(string(argv[3]) + "/vec_2.txt");
 
     stringstream ss2;
     ss2 << filess2.rdbuf();
     filess2.close();
+    filess2.clear();
 
-    v_3.load(s1);
-    v_4.load(s2);
 
-    cout << v_1 << endl;
-    cout << v_3 << endl;
-    cout << v_2 << endl;
-    cout << v_4 << endl;
+    ifstream filecode(string(argv[3]) + "/code.txt");
 
-    vec_4.load(ss1, &v_4);
-    vec_3.load(ss2, &v_3);
+    stringstream scode;
+    scode << filecode.rdbuf();
+    filecode.close();
+    filecode.clear();
 
 
 
-    // ifstream in_file("s1.txt", ios::binary);
-    // in_file.seekg(0, ios::end);
-    // int file_size = in_file.tellg();
-    // cout<<"Size of the file is"<<" "<< file_size<<" "<<"bytes";
-    // fp = fopen("serialization/s1.txt", "r");
+    v_1.load(s1);
+    v_2.load(s2);
+    code.load(scode);
 
-    // const std::string& tmp = s1.str();
-    // const char* cstr = tmp.c_str();
-    // cout << fgets(cstr, file_size, fp);
+    vec_1.load(ss1, &v_1);
+    vec_2.load(ss2, &v_2);
 
-    // v_3.load()
+    s1.str(std::string());
+    s2.str(std::string());
+    ss1.str(std::string());
+    ss2.str(std::string());
+    scode.str(std::string());
+
+    num_nodes1 = v_1.size() / 2;
+    num_nodes2 = v_2.size() / 2;
+
+    leaf_count = vec_1.rank10(v_1.size() - 1);
+
+    // cout << num_nodes1 << endl;
+    // cout << num_nodes2 << endl;
+    // cout << leaf_count << endl;
 
 
-
-    auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    // auto end = std::chrono::system_clock::now();
+    // std::chrono::duration<double> elapsed_seconds = end-start;
     // cout << "parse time: " << elapsed_seconds.count() << "s" << endl;
 
     auto start2 = std::chrono::system_clock::now();
     // Some computation here
     if(internal_nodes){
-        rf_allnodes(vec_1, vec_2, code, size, rf_dist, clusters_1);
-        cout << "Robinson Foulds distance is: " << float(num_nodes1 + num_nodes2 - rf_dist*2) / 2 << endl;
+        rf_allnodes(vec_1, vec_2, code, num_nodes1, rf_dist, clusters_1);
+        cout << "Robinson Foulds distance is: " << float(num_nodes1 + num_nodes2 - rf_dist*2 - leaf_count*2) / 2 << endl;
         // cout << "clusters differents in " << argv[1] << ":" << endl;
         // for (int i = 0; i < clusters_1.size(); i++){
         //     cout << clusters_1[i] << endl;
@@ -471,7 +476,7 @@ int main(int argc, char* argv[]){
     }
     else{
         if(weighted_trees){
-            weighted_rf_onlyleaves(vec_1, vec_2, code, size, w_rf_dist, clusters_1, w1, w2);
+            // weighted_rf_onlyleaves(vec_1, vec_2, code, size, w_rf_dist, clusters_1, w1, w2);
             cout << "distance = " << w_rf_dist / 2 << endl;
             // cout << "clusters differents in " << argv[1] << ":" << endl;
             // for (int i = 0; i < clusters_1.size(); i++){
@@ -480,9 +485,9 @@ int main(int argc, char* argv[]){
 
         }
         else{
-            rf_onlyleaves(vec_3, vec_4, code, size, rf_dist, clusters_1);
+            rf_onlyleaves(vec_1, vec_2, code, num_nodes1, rf_dist, clusters_1);
             // cout << rf_dist << endl;
-            cout << "distance = " << float(num_nodes1 + num_nodes2 - rf_dist*2) / 2 << endl;
+            cout << "distance = " << float(num_nodes1 + num_nodes2 - rf_dist*2 - leaf_count*2) / 2 << endl;
             // cout << "[1]" << endl;
             // cout << "Robinson Foulds distance is: " << rf_dist << endl;
             // cout << "clusters differents in " << argv[1] << ":" << endl;
