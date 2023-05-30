@@ -4,28 +4,34 @@ dir="trees/100000/" # the directory to search for files in
 
 iterations=5
 
-
-
+echo
+echo
+echo $dir
+echo
+echo "day:"
 for dir1 in "$dir"*/; do
-  echo $dir1;
+  # echo $dir1;
   # for file in "$dir1"; do
   files=("$dir1"/*)
   file1=${files[0]}
   file2=${files[1]}
   for ((i=1; i<=$iterations; i++)) do
-    ./treediff "$file1" "$file2"
-    echo
+    ./day "$file1" "$file2"
   done
-  echo
-  echo
-  echo
+done
+echo
+echo
+echo
+echo "treediff_post:"
+for dir1 in "$dir"*/; do
+  # echo $dir1;
+  # for file in "$dir1"; do
+  files=("$dir1"/*)
+  file1=${files[0]}
+  file2=${files[1]}
   for ((i=1; i<=$iterations; i++)) do
-    ./treediffsada "$file1" "$file2"
-    echo
+    ./treediff_postorder "$file1" "$file2"
   done
-  echo
-  echo
-  echo
   # ./treediffsada "$file1" "$file2"
   # if [[ "$output1" != "[1]" ]]; then
   #   echo "errou" "$dir1"
@@ -42,6 +48,8 @@ for dir1 in "$dir"*/; do
   # end_time <- Sys.time(); \
   # print(end_time - start_time)"
 done
+echo
+echo
 
 
 
