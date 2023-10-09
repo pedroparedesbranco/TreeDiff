@@ -643,9 +643,9 @@ class bp_support_pedro2
             return this->select(i);
         }
 
-        size_type postorder(size_type v){
-            return this->rank_0(this->find_close(v));
-        }
+        // size_type postorder(size_type v){
+        //     return this->rank_0(this->find_close(v));
+        // }
 
         size_type post_order_select(size_type i){
             return this->find_open(this->select0(i));
@@ -699,19 +699,31 @@ class bp_support_pedro2
         // }
 
         size_type cluster_size(size_type v){
-            return this->rank(this->find_close(v)) - this->rank(v) + 1;
+            // return this->rank(this->find_close(v)) - this->rank(v) + 1;
+            return (this->find_close(v) - v + 1) / 2;
         }
 
         size_type cluster_size2(size_type v, size_type u){
-            return this->rank(u) - this->rank(v) + 1;
+            // return this->rank(u) - this->rank(v) + 1;
+            return (u - v + 1) / 2;
         }
 
         size_type num_leaves(size_type v){
-            return this->rank10(this->find_close(v)) - this->rank10(v) + 1;
+            return this->rank10(this->find_close(v)) - this->rank10(v);
         }
 
         size_type num_leaves2(size_type v, size_type u){
-            return this->rank10(u) - this->rank10(v) + 1;
+            return this->rank10(u) - this->rank10(v);
+        }
+
+        size_type parent2(size_type v){
+            // if(this->m_bp[0][v-1] == 1){
+            //     return v-1;
+            // }
+            // else{
+            //     return this->find_open(v-1);
+            // }
+            return this->enclose(v);
         }
 
 
@@ -1092,7 +1104,9 @@ class bp_support_pedro2
             written_bytes += write_member(m_med_inner_blocks, out, child, "med_inner_blocks");
 
             written_bytes += m_bp_rank.serialize(out, child, "bp_rank");
+            written_bytes += m_bp_rank_10.serialize(out, child, "bp_rank_10");
             written_bytes += m_bp_select.serialize(out, child, "bp_select");
+            written_bytes += m_bp_select_0.serialize(out, child, "bp_select_0");
 
             written_bytes += m_sml_block_min_max.serialize(out, child, "sml_blocks");
             written_bytes += m_med_block_min_max.serialize(out, child, "med_blocks");
@@ -1110,13 +1124,17 @@ class bp_support_pedro2
         {
             m_bp = bp;
             read_member(m_size, in);
+            std::cout << m_size << std::endl;
+            std::cout << bp->size() << std::endl;
             assert(m_size == bp->size());
             read_member(m_sml_blocks, in);
             read_member(m_med_blocks, in);
             read_member(m_med_inner_blocks, in);
 
             m_bp_rank.load(in, m_bp);
+            m_bp_rank_10.load(in, m_bp);
             m_bp_select.load(in, m_bp);
+            m_bp_select_0.load(in, m_bp);
 
             m_sml_block_min_max.load(in);
             m_med_block_min_max.load(in);
