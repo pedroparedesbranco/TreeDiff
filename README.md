@@ -7,11 +7,13 @@ TreeDiff is a repository for comparing and visualizing changes in tree structure
 # Installation
 
 ```
+git clone https://github.com/pedroparedesbranco/TreeDiff.git
+cd TreeDiff
 git submodule update --init
 cd sdsl-lite
 ./install.sh ../sdsl
 cd ..
-git clone https://github.com/pedroparedesbranco/TreeDiff.git
+make
 ```
 
 # Generating trees
