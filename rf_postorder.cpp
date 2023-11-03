@@ -199,8 +199,11 @@ void weighted_rf_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2
         if(vec_1.isleaf(post_current)){
             // cout << "current = " << current << "  post_current = " << vec_1.nodemap(post_current) << endl;
             first.lca = vec_2.nodeselect(code[vec_1.nodemap(post_current) - 1] + 1);
-            // cout << "first.lca = " << vec_2.nodemap(first.lca) << endl;
             first.size = 1;
+            weight1 = w1[vec_1.nodemap(post_current) - 1];
+            weight2 = w2[vec_2.nodemap(first.lca) - 1];
+            w_rf_dist = w_rf_dist - (weight1 + weight2 - abs(weight1 - weight2));
+            // cout << "first.lca = " << vec_2.nodemap(first.lca) << endl;
             lcas_stack.push(first);
         }
         else{
@@ -378,25 +381,18 @@ int main(int argc, char* argv[]){
 
     strings.clear();    
 
-    // cout << v_1.bit_size() << "   " << v_1.capacity() << endl;
-    // cout << v_2.bit_size() << "   " << v_2.capacity() << endl;
-    // cout << code.size() << "   " << code.capacity() << endl;
-
     size = v_1.size() / 2;
 
     bp_support_pedro2<> vec_1(&v_1);
     bp_support_pedro2<> vec_2(&v_2);
 
-    // cout << sizeof(vec_1) << endl;
-    // cout << sizeof(vec_2) << endl;
-
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
     // cout << "parse time: " << elapsed_seconds.count() << "s" << endl;
+    // exit(0);
 
-    // triplets_onlyleaves(vec_1, vec_2, code, 0, triplets_equal, size);
-
-    // cout << ((size-num_nodes1) *((size-num_nodes1) - 1)*((size-num_nodes1)-2))/6 - triplets_equal << endl;
+    // rf_onlyleaves(vec_1, vec_2, code, size, rf_dist, clusters_1, clusters_2);
+    // cout << "Robinson Foulds distance is: " << float(num_nodes1 + num_nodes2 - rf_dist*2) / 2 << endl;
 
     // exit(0);
 
@@ -449,12 +445,14 @@ int main(int argc, char* argv[]){
                 for (int i = 1; i <= int(v_1.size()) / 2; i++){
                     if((!(find(clusters_1.begin(), clusters_1.end(), i) != clusters_1.end())) && (!vec_1.isleaf(vec_1.nodeselect(i)))){
                         cout << i << endl;
+                        cout << w1[i-1] << endl;
                     }
                 }
                 cout << "Indexes of clusters that are differents in " << argv[2] << ":" << endl;
                 for (int i = 1; i <= int(v_2.size()) / 2; i++){
                     if((!(find(clusters_2.begin(), clusters_2.end(), i) != clusters_2.end())) && (!vec_2.isleaf(vec_2.nodeselect(i)))){
                         cout << i << endl;
+                        cout << w2[i-1] << endl;
                     }
                 }
             }
@@ -462,7 +460,6 @@ int main(int argc, char* argv[]){
         }
         else{
             rf_onlyleaves(vec_1, vec_2, code, size, rf_dist, clusters_1, clusters_2);
-            // cout << rf_dist << endl;
             cout << "Robinson Foulds distance is: " << float(num_nodes1 + num_nodes2 - rf_dist*2) / 2 << endl;
             if(argc > 3 && !strcmp(argv[3], "info")){
                 cout << "Indexes of clusters that are differents in " << argv[1] << ":" << endl;
@@ -482,7 +479,7 @@ int main(int argc, char* argv[]){
     }
     auto end2 = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds2 = end2-start2;
-    cout << "algorithm time: " << elapsed_seconds2.count() << "s" << endl;
+    // cout << "algorithm time: " << elapsed_seconds2.count() << "s" << endl;
     // cout << elapsed_seconds2.count() << ", ";
     return 0;
 }
