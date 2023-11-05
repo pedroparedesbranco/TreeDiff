@@ -41,7 +41,9 @@ void get_string(FILE* fp, char c, int size, int num_tree, int &leaf_count, unord
     ungetc(c, fp);
 }
 
-
+/*
+This function recieves a newick format and creates a table that represents the tree by saving the label i.
+*/
 int create_table(FILE* fp, int size, int num_tree, int &leaf_count, int &internal_count, unordered_map<string, int> &strings, vector<int> *sizes, vector<int> *labels){
     char c;
     string str;
@@ -66,10 +68,12 @@ int create_table(FILE* fp, int size, int num_tree, int &leaf_count, int &interna
     return -1;
 }
 
+/* returns the most left leaf that is below i.*/
 int left_leaf(int i, int w){
     return i - w;
 }
 
+/* Creates a table that contains all clusters by saving the first and last leaf it contains.*/
 void create_clusters(int num_nodes1, int num_leafs, vector<int> *sizes, vector<int> *labels, vector<int> *clusters){
     int i, right, left, loc;
     int leaf_code = -1;
@@ -105,6 +109,7 @@ void create_clusters(int num_nodes1, int num_leafs, vector<int> *sizes, vector<i
     }
 }
 
+/* Searches in the cluster table if a given cluster is present in the given tree.*/
 bool verify_cluster(int l,int r, vector<int> *clusters){
     if((l == clusters[0][l] && r == clusters[1][l]) || (l == clusters[0][r] && r == clusters[1][r])){
         return true;
@@ -112,7 +117,8 @@ bool verify_cluster(int l,int r, vector<int> *clusters){
     return false;
 }
 
-
+/* Computes the Robinson Foulds distance by travering the second tree
+ and whenever finds a cluster verifies if it is present in the first tree.*/
 void compute_distance(int num_nodes2, int num_leafs, vector<int> *sizes, vector<int> *labels, vector<int> *clusters, int &rf_dist){
     stack<Struct> stack;
     Struct first, second;

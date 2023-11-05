@@ -1,10 +1,12 @@
 #include <string>
 #include <stack>
 
-#include "bp_support_pedro2.hpp"
+#include "bp_support_sada_extended.hpp"
 
 using namespace std;
 using namespace sdsl;
+
+
 
 void get_weight(FILE* fp, vector<float> &w, char c, int count, bool &weighted_trees, float &w_rf_dist){
     string str = "";
@@ -133,7 +135,8 @@ int node_color(int init, int mid, int last, int node){
     }
 }
 
-
+/* Traverses the first tree and searches for triplets that contain the same
+ topology by looking at the colors they where assigned in the second tree*/
 vector<int> count_triplets(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, int init, int mid, int last, long &dist, int branch){
     vector<int> results, results2, results_aux;
     if(vec_1.isleaf(root)){
@@ -170,7 +173,7 @@ vector<int> count_triplets(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_
 
 
 
-//n^2 only leaves
+/* Traverses the second tree and divides all nodes to left and right by assigning colors*/
 int divide_colors_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, long &dist, int size){ // TODO remove size
     int mid;
     int last;
@@ -185,6 +188,8 @@ int divide_colors_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& ve
     }
 }
 
+/* Traverses the first tree and searches for triplets that contain the same
+ topology by looking at the colors they where assigned in the second tree*/
 vector<int> count_triplets_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, int init, int mid, int last, long &dist, int branch){
     vector<int> results, results2, results_aux;
     if(vec_1.isleaf(root)){
@@ -222,7 +227,7 @@ vector<int> count_triplets_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro
 }
 
 
-//n^2 all nodes
+/* Traverses the second tree and divides all nodes to left and right by assigning colors*/
 int divide_colors_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, long &dist, int size){ // TODO remove size
     int mid;
     int last;

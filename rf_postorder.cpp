@@ -1,7 +1,7 @@
 #include <string>
 #include <stack>
 
-#include "bp_support_pedro2.hpp"
+#include "bp_support_sada_extended.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -11,6 +11,9 @@ struct Struct {
     int size;
 };
 
+/*
+Saves the weight found inside a label.
+*/
 void get_weight(FILE* fp, vector<float> &w, char c, int count, bool &weighted_trees, float &w_rf_dist){
     string str = "";
     float weight;
@@ -27,7 +30,9 @@ void get_weight(FILE* fp, vector<float> &w, char c, int count, bool &weighted_tr
     weighted_trees = true;
     ungetc(c, fp);
 }
-
+/*
+Looks for the label of a given node and does the correlation between trees using a hash table.
+*/
 void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings, int_vector<32>& code, int num_tree, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     string str = "";
     int aux;
@@ -65,11 +70,17 @@ void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings
     ungetc(c, fp);
 }
 
+/*
+Adds a bit with value i to the bit vector received as input.
+*/
 void add_bit(bit_vector& bv, int &count, int i){
     bv.resize(bv.size() + 1);
     bv[bv.size() - 1] = i;
 }
 
+/*
+This function recieves a newick format and returns a bit vector that represents that tree in a balanced parenthesis representation.
+*/
 bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, int_vector<32>& code, int num_tree, int &num_nodes, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     bit_vector bv = bit_vector(0);
     stack<int> stack;
@@ -127,7 +138,10 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, in
     return bv;
 }
 
-// without internal nodes (post_order implementation)
+/*
+This function computes the Robinson Foulds distance between weighted phylogenetic trees with taxa only on the leaves.
+It uses the PostOrderSelect operation to traverse the tree in a post-order traversal.
+*/
 void weighted_rf_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int size, float &w_rf_dist, vector<int> &clusters_1, vector<int> &clusters_2, vector<float>& w1, vector<float>& w2){
     int lcas = -1;
     int current, post_current;
@@ -184,7 +198,10 @@ void weighted_rf_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec
     }
 }
 
-// with internal nodes (post_order implementation)
+/*
+This function computes the Robinson Foulds distance between weighted fully labelled phylogenetic trees.
+It uses the PostOrderSelect operation to traverse the tree in a post-order traversal.
+*/
 void weighted_rf_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int size, float &w_rf_dist, vector<int> &clusters_1, vector<int> &clusters_2, vector<float>& w1, vector<float>& w2){
     int lcas = -1;
     int current, post_current;
@@ -244,7 +261,10 @@ void weighted_rf_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2
     }
 }
 
-// without internal nodes (post_order implementation)
+/*
+This function computes the Robinson Foulds distance between phylogenetic trees with taxa only on the leaves.
+It uses the PostOrderSelect operation to traverse the tree in a post-order traversal.
+*/
 void rf_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int size, int &rf_dist, vector<int> &clusters_1, vector<int> &clusters_2){
     int lcas = -1;
     int current, post_current;
@@ -295,7 +315,10 @@ void rf_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_v
     }
 }
 
-// with internal nodes (post_order implementation)
+/*
+This function computes the Robinson Foulds distance between fully labelled phylogenetic trees.
+It uses the PostOrderSelect operation to traverse the tree in a post-order traversal.
+*/
 void rf_allnodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int size, int &rf_dist, vector<int> &clusters_1, vector<int> &clusters_2){
     int lcas = -1;
     int current, post_current;

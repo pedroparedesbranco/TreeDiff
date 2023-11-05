@@ -1,7 +1,7 @@
 #include <string>
 #include <stack>
 
-#include "bp_support_pedro2.hpp"
+#include "bp_support_sada_extended.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -121,85 +121,7 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, in
     return bv;
 }
 
-long compute_shared(int l_blue, int l_red, int r_blue, int r_red){
-    return l_red * (r_blue *(r_blue - 1))*0.5 + l_blue * (r_red *(r_red - 1))*0.5 + r_red * (l_blue *(l_blue - 1))*0.5 + r_blue * (l_red *(l_red - 1))*0.5;
-}
-
-int node_color(int init, int mid, int last, int node){
-    if(node > init && node < mid){
-        return 1;
-    }
-    else if(node >= mid && node < last){
-        return 2;
-    }
-    else{
-        return 0;
-    }
-}
-
-
-vector<int> count_nodes(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, int init, int mid, int last, int &dist, int branch){
-    vector<int> results, results2, results_aux;
-    if(vec_1.isleaf(root)){
-        results.resize(5);
-        results[0] = 1;
-        for(int i = 1; i < 5; i++){
-            results[i] = 0;
-        }
-        if(int(code[vec_1.nodemap(root) - 1] + 1) > init && int(code[vec_1.nodemap(root) - 1] + 1) < mid){
-            results[branch*2 + 1] = 1;
-        }
-        else if(int(code[vec_1.nodemap(root) - 1] + 1) >= mid && int(code[vec_1.nodemap(root) - 1] + 1) < last){
-            results[branch*2 + 2] = 1;
-        }
-        return results;
-    }
-    else{
-        results_aux.resize(5);
-        results = count_nodes(vec_1, vec_2, code, root+1, init, mid, last, dist, 0);
-        results2 = count_nodes(vec_1, vec_2, code, vec_1.select(vec_1.nodemap(root) + results[0] + 1), init, mid, last, dist, 1);
-        results_aux[0] = results[0] + results2[0] + 1;
-        results_aux[1] = results[1] + results[3];
-        results_aux[2] = results[2] + results[4];
-        results_aux[3] = results2[1] + results2[3];
-        results_aux[4] = results2[2] + results2[4];
-        dist = dist + compute_shared(results_aux[1], results_aux[2], results_aux[3], results_aux[4]);
-        return results_aux;
-    }
-}
-
-
-//n^2
-int triplets_onlyleaves(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, int &dist, int size){ // TODO remove size
-    int mid;
-    int last;
-    if(vec_2.isleaf(root)){
-        return 1;
-    }
-    else{
-        mid = triplets_onlyleaves(vec_1, vec_2, code, root+1, dist, size) + 1;
-        last = mid + triplets_onlyleaves(vec_1, vec_2, code, vec_2.select(vec_2.nodemap(root) + mid), dist, size);
-        count_nodes(vec_1, vec_2, code, 0, vec_2.nodemap(root), vec_2.nodemap(root) + mid, vec_2.nodemap(root) + last, dist, 0);
-        return last;
-    }
-}
-
-
-//nlog(n)
-int triplets_onlyleaves_aux(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, int &dist, vector<int> &values){ // TODO remove size
-    int mid;
-    int last;
-    if(vec_2.isleaf(root)){
-        return 1;
-    }
-    else{
-        mid = triplets_onlyleaves_aux(vec_1, vec_2, code, root+1, dist, values) + 1;
-        last = mid + triplets_onlyleaves_aux(vec_1, vec_2, code, vec_2.select(vec_2.nodemap(root) + mid), dist, values);
-        count_nodes(vec_1, vec_2, code, 0, vec_2.nodemap(root), vec_2.nodemap(root) + mid, vec_2.nodemap(root) + last, dist, 0);
-        return last;
-    }
-}
-
+/* Updates the second tree every time a node change color in the first tree.*/
 void update_HDT(bp_support_pedro2<>& vec_2, vector<vector<int>> &values, vector<long>& values2, int change, int old_color, int new_color){
     long l_red, l_blue, r_red, r_blue, size;
     int current = vec_2.nodeselect(change);
@@ -223,7 +145,7 @@ void update_HDT(bp_support_pedro2<>& vec_2, vector<vector<int>> &values, vector<
     }
 }
 
-
+/* Traverses the first tree and applies the smaller half trick.*/
 long triplets_coloring(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, vector<vector<int>> &values, vector<long>& values2, int root){
     int size1, size2, second, current;
     long dist = 0;
@@ -278,7 +200,7 @@ long triplets_coloring(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, i
         return dist;
     }
 }
-
+/* Assignes all nodes the color red at the start of the algorithm.*/
 void triplets_onlyleaves_2(bp_support_pedro2<>& vec_1, bp_support_pedro2<>& vec_2, int_vector<32>& code, int root, long &dist, int size){ // TODO remove size
     vector<vector<int>> values;
     vector<long> values2;

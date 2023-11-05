@@ -1,7 +1,7 @@
 #include <string>
 #include <stack>
 
-#include "bp_support_pedro2.hpp"
+#include "bp_support_sada_extended.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -74,7 +74,7 @@ void add_bit(bit_vector& bv, int &count, int i){
     bv[bv.size() - 1] = i;
 }
 /*
-This function computes recieves a newick format and returns a bit vector that represents that tree in a balanced parenthesis representation.
+This function recieves a newick format and returns a bit vector that represents that tree in a balanced parenthesis representation.
 */
 bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, int_vector<32>& code, int num_tree, int &num_nodes, bool &internal_nodes, bool &weighted_trees, float &w_rf_dist, vector<float>& w1, vector<float>& w2){
     bit_vector bv = bit_vector(0);
@@ -130,7 +130,7 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, in
 }
 
 /*
-This function computes the Robinson Foulds distance between weighted phylogenetic trees.
+This function computes the Robinson Foulds distance between weighted phylogenetic trees with taxa only on the leaves.
 It uses the NextSibling and the FirstChild operations to traverse the tree in a post-order traversal.
 */
 int weighted_rf_onlyleaves(bp_support_pedro2<> &vec_1, bp_support_pedro2<> &vec_2, int_vector<32>& code, int current, float &w_rf_dist, vector<int> &clusters_1, vector<int> &clusters_2, vector<float>& w1, vector<float>& w2){
@@ -279,7 +279,6 @@ int weighted_rf_allnodes(bp_support_pedro2<> &vec_1, bp_support_pedro2<> &vec_2,
 This function computes the Robinson Foulds distance between fully labelled phylogenetic trees.
 It uses the NextSibling and the FirstChild operations to traverse the tree in a post-order traversal.
 */
-// with internal nodes (next_sibling implementation)
 int rf_allnodes(bp_support_pedro2<> &vec_1, bp_support_pedro2<> &vec_2, int_vector<32>& code, int current, int &rf_dist, vector<int> &clusters_1, vector<int> &clusters_2){
     int lcas, lcas_aux, x;
 
