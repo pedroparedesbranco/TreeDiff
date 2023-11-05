@@ -10,7 +10,7 @@ The TreeDiff repository uses the Succinct Data Structure Library ([SDSL](https:/
 
 To use the TreeDiff repository there are the following requirements:
 
-* recent `g++` compiler
+* `g++` compiler, version 9.4.0 or higher, to use clang++ change in Makefile `CC = clang++` and `CFLAGS = -O3 -Wall -std=c++11`
 * ETE3 python library
 * All the requirements present in the [SDSL](https://github.com/simongog/sdsl-lite/tree/master) repository
 
@@ -38,19 +38,52 @@ This installs [SDSL](https://github.com/simongog/sdsl-lite/tree/master) and crea
 
 ## Commands
 
-To use this TreeDiff, the following commands can be used where ´tree1´ is the first tree to be compared and ´tree2´ the second the second tree. The ´info´ argument is optional and it can be used to visualize the clusters that are exclusive to both trees.
+To use this TreeDiff, the following commands can be used:
+
+Arguments:
+
+* `tree1.txt`, the first tree to be compared in a newick format.
+* `tree2.txt`, the second tree to be compared in a newick format.
+* `info`, optional argument that only works for the first two implementations, it indicates which clusters are exclusive for both trees by returning their pre-order indexes.
 
 ```
-./rf_postorder treeA.txt treeB.txt [info]
-./rf_nextsibling treeA.txt treeB.txt [info]
-./rf_day treeA.txt treeB.txt
-./trip_treediff treeA.txt treeB.txt
-./trip_sht treeA.txt treeB.txt
+./rf_postorder tree1.txt tree2.txt [info]
+./rf_nextsibling tree1.txt tree2.txt [info]
+./rf_day tree1.txt tree2.txt
+./trip_treediff tree1.txt tree2.txt
+./trip_sht tree1.txt tree2.txt
 ```
 
 ## Examples
 
-In the [trees](https://github.com/pedroparedesbranco/TreeDiff/tree/main/trees) folder it can be seen an example of trees to give as an input.
+In the [tree_examples](https://github.com/pedroparedesbranco/TreeDiff/tree/main/tree_examples) folder it can be seen two examples of trees to give as an input.
+
+TreeA.txt contains the newick format for the following tree:
+
+![alt text](https://github.com/pedroparedesbranco/TreeDiff/blob/main/tree1.png)
+
+TreeB.txt contains the newick format for the following tree:
+
+![alt text](https://github.com/pedroparedesbranco/TreeDiff/blob/main/tree2.png)
+
+By running the command
+
+```
+./rf_postorder tree_examples/treeA.txt tree_examples/treeB.txt info
+```
+
+The output will be:
+
+```
+Robinson Foulds distance is: 1
+Indexes of clusters that are differents in tree_examples/treeA.txt:
+3
+Indexes of clusters that are differents in tree_examples/treeB.txt:
+7
+```
+
+The indexes that are shown in the differences represent the pre-order indexes that contain the exclusive clusters.
+This means that in treeA the cluster (A, B) is exclusive and in treeB the cluster (A, C) is exclusive.
 
 ## Generating trees
 
