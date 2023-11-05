@@ -1,6 +1,5 @@
 from ete3 import Tree
 import random
-import dendropy
 import sys
 import os
 
@@ -21,7 +20,6 @@ def create_fully_labelled_weighted_trees(number_trees, number_leafs):
             if not node.is_leaf():
                 node.name = str(label - 1)
                 label += 1
-        tree_list = dendropy.TreeList()
         data=t1.write(format = 3)
         data = data[:-1]
         print(data + str(label - 1) + ";")
@@ -42,7 +40,6 @@ def create_fully_labelled_trees(number_trees, number_leafs):
             if not node.is_leaf():
                 node.name = str(label - 1)
                 label += 1
-        tree_list = dendropy.TreeList()
         data=str(t1.write(format = 8))
         data = data[:-1]
         print(data + str(label - 1) + ";")
@@ -59,7 +56,6 @@ def create_trees(number_trees, number_leafs):
         name_list = [str(x) for x in range(number_leafs)]
         t1 = Tree()
         t1.populate(number_leafs, names_library=name_list)
-        tree_list = dendropy.TreeList()
         data=t1.write(format = 9)
         print(data)
 
@@ -79,7 +75,6 @@ def create_weighted_trees(number_trees, number_leafs):
             node.dist = random.uniform(0, 10)
             if not node.is_leaf():
                 node.name = "_"
-        tree_list = dendropy.TreeList()
         data=t1.write(format = 3)
         data = data[:-1]
         print(data + "_;")
