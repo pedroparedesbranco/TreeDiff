@@ -24,6 +24,10 @@ Looks for the label of a given node and does the correlation between trees using
 void get_string(FILE* fp, char c, int size, int num_tree, int &leaf_count, unordered_map<string, int> &strings, vector<int> *sizes, vector<int> *labels){
     string str = "";
     while(!(c == ')' || c == '(' || c == ',' || c == ';')){
+        if(c == EOF){
+            cout << "Program did not found ';' in the newick format." << endl;
+            exit(1);
+        }
         str.append(1, c);
         c = getc(fp);
     }
@@ -48,7 +52,11 @@ int create_table(FILE* fp, int size, int num_tree, int &leaf_count, int &interna
     char c;
     string str;
     while((c=getc(fp)) != ';'){
-        if(c == '('){
+        if(c == EOF){
+            cout << "Program did not found ';' in the newick format." << endl;
+            exit(1);
+        }
+        else if(c == '('){
             size = size + create_table(fp, 0, num_tree, leaf_count, internal_count, strings, sizes, labels);
         }
         else if(c == ')'){
@@ -216,7 +224,7 @@ int main(int argc, char* argv[]){
 
     compute_distance(num_nodes2, leaf_count1, sizes, labels, clusters, rf_dist);
 
-    cout << "Robinson Foulds distance is: = " << float(num_nodes1 - (leaf_count1 + rf_dist) + num_nodes2 - (leaf_count1 + rf_dist)) / 2 << endl;
+    cout << "Robinson Foulds distance is: " << float(num_nodes1 - (leaf_count1 + rf_dist) + num_nodes2 - (leaf_count1 + rf_dist)) / 2 << endl;
 
     auto end2 = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds2 = end2-start2;

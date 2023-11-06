@@ -15,6 +15,10 @@ void get_weight(FILE* fp, vector<float> &w, char c, int count, bool &weighted_tr
     string str = "";
     float weight;
     while(!(c == ')' || c == '(' || c == ',' || c == ';')){
+        if(c == EOF){
+            cout << "Program did not found ';' in the newick format." << endl;
+            exit(1);
+        }
         str.append(1, c);
         c = getc(fp);
     }
@@ -35,6 +39,10 @@ void get_string(FILE* fp, char c, int count, unordered_map<string, int>& strings
     string str = "";
     int aux;
     while(!(c == ')' || c == '(' || c == ',' || c == ';' || c == ':')){
+        if(c == EOF){
+            cout << "Program did not found ';' in the newick format." << endl;
+            exit(1);
+        }
         str.append(1, c);
         c = getc(fp);
     }
@@ -86,7 +94,11 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, in
     FILE* fp;
     fp = fopen(tree, "r");
     while((c=getc(fp)) != ';'){
-        if(c == '('){
+        if(c == EOF){
+            cout << "Program did not found ';' in the newick format for tree: " << tree << endl;
+            exit(1);
+        }
+        else if(c == '('){
             stack.push(count);
             count++;
             add_bit(bv, count2, 1);
@@ -97,9 +109,17 @@ bit_vector create_bit_vector(char* tree, unordered_map<string, int>& strings, in
         else if(c == ')'){
             num_nodes++;
             c = getc(fp);
+            if(c == EOF){
+                cout << "Program did not found ';' in the newick format for tree: " << tree << endl;
+                exit(1);
+            }
             if(!(c == ')' || c == '(' || c == ',' || c == ';')){
                 if(c == ':'){
                     c = getc(fp);
+                    if(c == EOF){
+                        cout << "Program did not found ';' in the newick format for tree: " << tree << endl;
+                        exit(1);
+                    }
                     if(num_tree == 0){
                         get_weight(fp, w1, c, stack.top(), weighted_trees, w_rf_dist);
                     }
