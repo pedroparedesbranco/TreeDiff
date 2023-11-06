@@ -36,6 +36,8 @@ This installs [SDSL](https://github.com/simongog/sdsl-lite/tree/master) and crea
 * `trip_treediff`, it computes the Triplets metric with low memory usage.
 * `trip_sht`, it computes the Triplets metric efficiently.
 
+These executables can be found in the main directory.
+
 ## Commands
 
 To use this TreeDiff, the following commands can be used:
