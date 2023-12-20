@@ -1,6 +1,6 @@
   CC = g++
 
-  CFLAGS  = -O3 -Wall
+  CFLAGS  = -O3 -Wall -static
 
 all:
 	$(CC) $(CFLAGS) -I./sdsl/include/ rf_nextsibling.cpp sdsl/lib/libsdsl.a -o rf_nextsibling
