@@ -1,0 +1,4 @@
+salmonella_fully_3003.nwk filter=lfs diff=lfs merge=lfs -text
+salmonella_leafs_1501.nwk filter=lfs diff=lfs merge=lfs -text
+salmonella_leafs_3003.nwk filter=lfs diff=lfs merge=lfs -text
+salmonella_fully_1501.nwk filter=lfs diff=lfs merge=lfs -text
